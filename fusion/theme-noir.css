@@ -1,0 +1,144 @@
+/* =========================================================
+   theme-noir — ssstik / rain · blood ink · cold steel
+   hand in the rain · crimson mist · late night film
+   ========================================================= */
+body.theme-noir {
+  --ink: #f2eaea;
+  --muted: rgba(220, 190, 195, 0.5);
+  --panel: rgba(10, 6, 8, 0.78);
+  --panel-solid: rgba(12, 6, 8, 0.95);
+  --line: rgba(180, 70, 80, 0.2);
+  --glow: rgba(160, 35, 50, 0.3);
+  --listen: #c84a55;
+  --listen-bg: rgba(160, 40, 50, 0.14);
+  --listen-border: rgba(180, 60, 70, 0.38);
+  --progress: linear-gradient(90deg, #3a1018, #a83845, #e8b0b8);
+  --accent: #c04050;
+  background: #050203;
+}
+
+/* video: keep rain, deepen blood, mute midtones */
+body.theme-noir .video-bg video {
+  filter: brightness(0.42) contrast(1.2) saturate(0.7) hue-rotate(2deg);
+}
+body.theme-noir .banner video {
+  filter: brightness(0.68) contrast(1.12) saturate(0.85);
+}
+body.theme-noir .video-overlay {
+  background:
+    radial-gradient(ellipse 100% 60% at 80% 20%, rgba(140, 25, 40, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 15% 70%, rgba(60, 70, 90, 0.12) 0%, transparent 50%),
+    linear-gradient(180deg,
+      rgba(5, 2, 3, 0.55) 0%,
+      rgba(5, 2, 3, 0.12) 32%,
+      rgba(5, 2, 3, 0.55) 68%,
+      rgba(3, 1, 2, 0.96) 100%);
+}
+body.theme-noir .video-overlay::after {
+  box-shadow:
+    inset 0 0 140px rgba(2, 0, 1, 0.7),
+    inset 0 0 40px rgba(100, 20, 30, 0.06),
+    inset 0 -50px 90px rgba(0, 0, 0, 0.4);
+}
+body.theme-noir .noise { opacity: 0.07; mix-blend-mode: soft-light; }
+
+body.theme-noir .scroll-progress {
+  background: linear-gradient(90deg, transparent, #c04050, #f0c0c8);
+  box-shadow: 0 0 20px rgba(160, 35, 50, 0.4);
+}
+
+body.theme-noir .enter-inner {
+  border-color: rgba(180, 60, 70, 0.18);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(200, 80, 90, 0.08);
+}
+body.theme-noir .enter-inner::before {
+  background: radial-gradient(circle, rgba(160, 30, 45, 0.18) 0%, transparent 62%);
+}
+body.theme-noir .enter-name {
+  text-shadow: 0 4px 40px rgba(0,0,0,0.6), 0 0 50px rgba(160, 35, 50, 0.28);
+}
+body.theme-noir .enter-pulse { background: #c04050; }
+body.theme-noir .enter-avatar,
+body.theme-noir .avatar {
+  background: conic-gradient(from 0deg, #c04050, #d0c0c4, #c04050, #602030, #c04050);
+}
+
+body.theme-noir .profile {
+  box-shadow:
+    0 2px 0 rgba(200, 80, 90, 0.06) inset,
+    0 32px 80px rgba(0,0,0,0.55),
+    0 0 0 1px rgba(0,0,0,0.4),
+    0 0 70px rgba(160, 30, 45, 0.1);
+}
+body.theme-noir .profile:hover {
+  box-shadow:
+    0 2px 0 rgba(200, 80, 90, 0.1) inset,
+    0 40px 100px rgba(0,0,0,0.6),
+    0 0 90px var(--glow);
+}
+body.theme-noir .profile::before {
+  background: linear-gradient(90deg, transparent, rgba(255,200,200,0.25), #c04050, rgba(255,200,200,0.25), transparent);
+}
+body.theme-noir .bio { border-left-color: rgba(192, 64, 80, 0.45); color: rgba(240, 210, 215, 0.55); }
+body.theme-noir .name-scatter .letter.is-active { color: #e07080; text-shadow: 0 0 22px rgba(192, 64, 80, 0.45); }
+body.theme-noir .socials a:hover, body.theme-noir .share-btn:hover {
+  background: rgba(192, 64, 80, 0.15);
+  border-color: rgba(192, 64, 80, 0.4);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35), 0 0 24px var(--glow);
+}
+body.theme-noir .play-btn {
+  background: linear-gradient(145deg, rgba(192, 64, 80, 0.4), rgba(100, 25, 35, 0.25));
+  border-color: rgba(192, 64, 80, 0.45);
+  box-shadow: 0 6px 24px rgba(160, 35, 50, 0.28), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+body.theme-noir .play-btn:hover {
+  background: linear-gradient(145deg, rgba(210, 80, 95, 0.5), rgba(120, 30, 40, 0.3));
+  box-shadow: 0 8px 32px rgba(160, 35, 50, 0.4), 0 0 30px var(--glow);
+}
+body.theme-noir .player:has(.viz.active) {
+  border-color: rgba(192, 64, 80, 0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 40px var(--glow);
+}
+body.theme-noir .orbit-filter.is-active {
+  background: rgba(192, 64, 80, 0.18);
+  border-color: rgba(192, 64, 80, 0.4);
+  box-shadow: 0 0 24px var(--glow);
+}
+body.theme-noir .cf-cover.is-active .cf-face {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 2px rgba(192, 64, 80, 0.4), 0 0 48px var(--glow);
+}
+body.theme-noir .orbit-nav:hover {
+  background: rgba(192, 64, 80, 0.15);
+  border-color: rgba(192, 64, 80, 0.35);
+  box-shadow: 0 0 24px var(--glow);
+}
+body.theme-noir .works-header h2::after {
+  background: linear-gradient(90deg, transparent, #c04050, transparent);
+  box-shadow: 0 0 14px var(--glow);
+}
+body.theme-noir .status-pill.listening { color: var(--listen); }
+body.theme-noir .progress-bar { box-shadow: 0 0 12px rgba(160, 35, 50, 0.4); }
+
+/* light fx — noir (blood / steel) */
+body.theme-noir .light-bloom {
+  background: radial-gradient(circle, rgba(180, 40, 55, 0.18) 0%, rgba(120, 30, 40, 0.06) 40%, transparent 70%);
+  right: -15%; top: -20%;
+}
+body.theme-noir .light-ray {
+  background: linear-gradient(180deg, transparent, rgba(200, 80, 90, 0.05) 25%, rgba(255, 180, 180, 0.1) 50%, rgba(200, 80, 90, 0.04) 75%, transparent);
+}
+body.theme-noir .light-orb.orb-1 {
+  background: radial-gradient(circle, rgba(200, 60, 75, 0.5) 0%, transparent 70%);
+}
+body.theme-noir .light-orb.orb-2 {
+  background: radial-gradient(circle, rgba(140, 40, 55, 0.35) 0%, transparent 70%);
+}
+body.theme-noir .light-orb.orb-3 {
+  background: radial-gradient(circle, rgba(180, 100, 110, 0.4) 0%, transparent 70%);
+}
+body.theme-noir .light-streak {
+  background: linear-gradient(90deg, transparent, rgba(200, 80, 90, 0.04) 25%, rgba(255, 160, 160, 0.12) 50%, rgba(200, 80, 90, 0.04) 75%, transparent);
+}
+body.theme-noir .profile::after {
+  background: linear-gradient(135deg, rgba(255, 180, 180, 0.08) 0%, transparent 30%, transparent 70%, rgba(180, 40, 55, 0.05) 100%);
+}

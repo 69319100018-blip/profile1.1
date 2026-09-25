@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talos · Fusion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="theme-222.css" />
+  <link rel="stylesheet" href="theme-noir.css" />
+  <link rel="stylesheet" href="theme-capitano.css" />
+  <link rel="stylesheet" href="theme-alucard.css" />
+  <link rel="stylesheet" href="theme-aegir.css" />
+  <link rel="stylesheet" href="theme-secret.css" />
+</head>
+<body class="locked">
+  <!-- Video Background (dual layer · crossfade like profile) -->
+  <div class="video-bg" aria-hidden="true">
+    <video id="bgVideo" class="bg-layer is-active" autoplay muted loop playsinline>
+      <source src="222.mp4" type="video/mp4" />
+    </video>
+    <video id="bgVideoB" class="bg-layer" muted loop playsinline>
+      <source src="" type="video/mp4" />
+    </video>
+  </div>
+  <div class="overlay"></div>
+  <div class="noise"></div>
+  <canvas id="stars"></canvas>
+  <div class="particles" id="particles"></div>
+
+  <!-- Light atmosphere (from profile) -->
+  <div class="light-fx" aria-hidden="true">
+    <div class="light-bloom"></div>
+    <div class="light-orb orb-1"></div>
+    <div class="light-orb orb-2"></div>
+  </div>
+
+  <!-- ========== INTRO / ENTER GATE ========== -->
+  <div class="intro" id="intro">
+    <div class="intro-content">
+      <div class="intro-avatar-wrap">
+        <img src="photo.png" alt="Talos" class="intro-avatar" />
+        <span class="intro-ring"></span>
+      </div>
+      <h1 class="intro-name">TALOS</h1>
+      <p class="intro-tag">fusion · pro × profile</p>
+      <p class="intro-hint"><span class="intro-dot"></span> click to enter</p>
+    </div>
+  </div>
+
+  <!-- Sticky chrome (outside .site so position:fixed works vs viewport) -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <nav class="navbar" id="navbar" hidden>
+    <a href="#about" class="nav-brand">
+      <img src="photo.png" alt="Talos" />
+      <span>Talos blackagency</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <span class="nav-indicator" id="navIndicator" aria-hidden="true"></span>
+      <a href="#about" class="nav-link active" data-section="about">About</a>
+      <a href="#projects" class="nav-link" data-section="projects">Projects</a>
+      <a href="#chars" class="nav-link" data-section="chars">Characters</a>
+    </div>
+    <div class="nav-socials">
+      <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" title="Steam"><i class="fab fa-steam"></i></a>
+    </div>
+  </nav>
+  <div class="nav-glow" id="navGlow" hidden></div>
+
+  <!-- ========== MAIN SITE ========== -->
+  <div class="site" id="site">
+    <!-- ABOUT -->
+    <section id="about" class="section section-about">
+      <div class="container">
+        <div class="card">
+          <div class="avatar-wrap">
+            <img src="photo.png" alt="Profile" class="avatar" />
+            <span class="status-dot" title="Online"></span>
+          </div>
+          <h1 class="name">Talos blackagency</h1>
+          <p class="handle">@etml01</p>
+          <p class="bio">Gamer · Dev · streamer<br></p>
+          <div class="tags">
+            <span class="tag">FiveM</span>
+            <span class="tag">Novel</span>
+            <span class="tag">Clips</span>
+            <span class="tag">Aesthetic</span>
+          </div>
+          <div class="socials">
+            <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" class="social-btn ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" class="social-btn fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" class="social-btn tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" class="social-btn st" title="Steam"><i class="fab fa-steam"></i></a>
+            <a href="mailto:sriwathnphngscray@gmail.com" class="social-btn email" title="Email"><i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section section-projects">
+      <div class="projects-wrap">
+        <h2 class="projects-title">My Projects</h2>
+        <p class="projects-sub">คลิกการ์ดเพื่อเปิดอัลบั้ม · กดภาพเพื่อดูเต็มจอ</p>
+        <div class="projects-grid">
+          <article class="project-card" data-album="videos" role="button" tabindex="0">
+            <div class="project-img" style="background-image: url('vid-1.1.jpg');">
+              <div class="project-img-overlay"><i class="fas fa-play-circle"></i></div>
+            </div>
+            <div class="project-info">
+              <h3>Clips &amp; Videos</h3>
+              <p>คลิปวิดีโอ · กดเพื่อเปิดอัลบั้ม</p>
+            </div>
+          </article>
+          <article class="project-card" data-album="games" role="button" tabindex="0">
+            <div class="project-img" style="background-image: url('game-1.png');">
+              <div class="project-img-overlay"><i class="fas fa-gamepad"></i></div>
+            </div>
+            <div class="project-info">
+              <h3>FiveM / Game</h3>
+              <p>ภาพจากเกม · กดเพื่อเปิดอัลบั้ม</p>
+            </div>
+          </article>
+          <article class="project-card" data-album="extra" role="button" tabindex="0">
+            <div class="project-img" style="background-image: url('work-lightcity.png');">
+              <div class="project-img-overlay"><i class="fas fa-city"></i></div>
+            </div>
+            <div class="project-info">
+              <h3>City &amp; Scenes</h3>
+              <p>บรรยากาศ · Night drive · Aesthetic</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARACTERS (featured from pro) -->
+    <section id="chars" class="section section-chars">
+      <div class="chars-wrap">
+        <h2 class="chars-title">Novel Characters</h2>
+        <p class="chars-sub">ตัวละครนิยาย · กดเพื่อเปิดอัลบั้มเต็ม</p>
+        <div class="chars-grid" id="charsPreview">
+          <!-- filled by JS -->
+        </div>
+        <button class="chars-open-btn" data-album="chars" id="openCharsAlbum">
+          <i class="fas fa-book-open"></i> เปิดอัลบั้มตัวละครทั้งหมด
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Album Modal -->
+  <div class="album-modal" id="albumModal" hidden>
+    <div class="album-backdrop" id="albumBackdrop"></div>
+    <div class="album-panel">
+      <div class="album-header">
+        <h3 id="albumTitle">Album</h3>
+        <button class="album-close" id="albumClose" aria-label="Close"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="album-body" id="albumBody"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose"><i class="fas fa-times"></i></button>
+    <button class="lightbox-prev" id="lightboxPrev"><i class="fas fa-chevron-left"></i></button>
+    <button class="lightbox-next" id="lightboxNext"><i class="fas fa-chevron-right"></i></button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+    <p class="lightbox-count" id="lightboxCount"></p>
+  </div>
+
+  <!-- Music player bar -->
+  <div class="player" id="player" hidden>
+    <img src="photo.png" alt="" class="player-cover" />
+    <div class="player-info">
+      <div class="player-title" id="playerTitle">Swim</div>
+      <div class="player-sub" id="playerSub">instrumental · fusion</div>
+    </div>
+    <div class="player-progress-wrap">
+      <span class="player-time" id="playerTime">0:00</span>
+      <div class="player-bar" id="playerBar">
+        <div class="player-fill" id="playerFill"></div>
+      </div>
+      <span class="player-dur" id="playerDur">0:00</span>
+    </div>
+    <button class="player-btn" id="musicBtn" title="Play / Pause">
+      <i class="fas fa-pause"></i>
+    </button>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="swim-instrumental.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+/* =========================================================
+   theme-aegir — qingxioa.mp4
+   cyan tide · aqua glow · luminous silk · deep water
+   ========================================================= */
+body.theme-aegir {
+  --ink: #e8f8ff;
+  --muted: rgba(150, 210, 230, 0.52);
+  --panel: rgba(4, 14, 18, 0.78);
+  --panel-solid: rgba(4, 12, 16, 0.95);
+  --line: rgba(60, 220, 230, 0.22);
+  --glow: rgba(40, 220, 240, 0.35);
+  --listen: #3ad8e8;
+  --listen-bg: rgba(40, 200, 220, 0.12);
+  --listen-border: rgba(60, 220, 240, 0.4);
+  --progress: linear-gradient(90deg, #063040, #2ec4d4, #b0f0ff);
+  --accent: #2ec8d8;
+  background: #020a0d;
+}
+
+body.theme-aegir .video-bg video {
+  filter: brightness(0.48) contrast(1.15) saturate(1.05) hue-rotate(-4deg);
+}
+body.theme-aegir .banner video {
+  filter: brightness(0.72) contrast(1.1) saturate(1.1);
+}
+body.theme-aegir .video-overlay {
+  background:
+    radial-gradient(ellipse 90% 55% at 70% 20%, rgba(40, 180, 210, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 20% 70%, rgba(20, 80, 100, 0.15) 0%, transparent 50%),
+    linear-gradient(180deg,
+      rgba(2, 10, 13, 0.55) 0%,
+      rgba(2, 10, 13, 0.12) 32%,
+      rgba(2, 10, 13, 0.5) 68%,
+      rgba(1, 6, 8, 0.97) 100%);
+}
+body.theme-aegir .video-overlay::after {
+  box-shadow:
+    inset 0 0 140px rgba(0, 4, 8, 0.7),
+    inset 0 0 40px rgba(40, 180, 210, 0.05),
+    inset 0 -50px 90px rgba(0, 0, 0, 0.4);
+}
+body.theme-aegir .noise { opacity: 0.04; }
+
+body.theme-aegir .scroll-progress {
+  background: linear-gradient(90deg, transparent, #2ec8d8, #e0faff);
+  box-shadow: 0 0 20px rgba(40, 200, 220, 0.45);
+}
+
+body.theme-aegir .enter-inner {
+  border-color: rgba(60, 220, 230, 0.18);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(100, 230, 240, 0.1);
+}
+body.theme-aegir .enter-inner::before {
+  background: radial-gradient(circle, rgba(40, 200, 220, 0.18) 0%, transparent 62%);
+}
+body.theme-aegir .enter-name {
+  text-shadow: 0 4px 40px rgba(0,0,0,0.55), 0 0 55px rgba(40, 210, 230, 0.3);
+}
+body.theme-aegir .enter-pulse { background: #2ec8d8; }
+body.theme-aegir .enter-avatar,
+body.theme-aegir .avatar {
+  background: conic-gradient(from 0deg, #2ec8d8, #e0faff, #2ec8d8, #0a6080, #2ec8d8);
+  box-shadow: 0 0 0 4px rgba(4, 12, 16, 0.95), 0 12px 32px rgba(0,0,0,0.5), 0 0 45px rgba(40, 210, 230, 0.3);
+}
+
+body.theme-aegir .profile {
+  box-shadow:
+    0 2px 0 rgba(100, 230, 240, 0.07) inset,
+    0 32px 80px rgba(0,0,0,0.55),
+    0 0 80px rgba(30, 180, 200, 0.12);
+}
+body.theme-aegir .profile:hover {
+  box-shadow: 0 2px 0 rgba(100, 230, 240, 0.12) inset, 0 40px 100px rgba(0,0,0,0.6), 0 0 100px var(--glow);
+}
+body.theme-aegir .profile::before {
+  background: linear-gradient(90deg, transparent, rgba(180, 240, 255, 0.3), #2ec8d8, rgba(180, 240, 255, 0.3), transparent);
+}
+body.theme-aegir .bio {
+  border-left-color: rgba(46, 200, 216, 0.5);
+  color: rgba(190, 235, 245, 0.55);
+}
+body.theme-aegir .name-scatter .letter.is-active {
+  color: #5ae0f0;
+  text-shadow: 0 0 24px rgba(40, 210, 230, 0.55);
+}
+body.theme-aegir .socials a:hover, body.theme-aegir .share-btn:hover {
+  background: rgba(46, 200, 216, 0.15);
+  border-color: rgba(46, 200, 216, 0.42);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35), 0 0 24px var(--glow);
+}
+body.theme-aegir .play-btn {
+  background: linear-gradient(145deg, rgba(46, 200, 216, 0.45), rgba(20, 100, 120, 0.28));
+  border-color: rgba(46, 200, 216, 0.5);
+  box-shadow: 0 6px 24px rgba(30, 180, 200, 0.32), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+body.theme-aegir .play-btn:hover {
+  background: linear-gradient(145deg, rgba(80, 230, 245, 0.55), rgba(30, 120, 140, 0.32));
+  box-shadow: 0 8px 32px rgba(30, 180, 200, 0.45), 0 0 32px var(--glow);
+}
+body.theme-aegir .player:has(.viz.active) {
+  border-color: rgba(46, 200, 216, 0.35);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 40px var(--glow);
+}
+body.theme-aegir .orbit-filter.is-active {
+  background: rgba(46, 200, 216, 0.18);
+  border-color: rgba(46, 200, 216, 0.45);
+  box-shadow: 0 0 24px var(--glow);
+}
+body.theme-aegir .cf-cover.is-active .cf-face {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 2px rgba(46, 200, 216, 0.45), 0 0 50px var(--glow);
+}
+body.theme-aegir .orbit-nav:hover {
+  background: rgba(46, 200, 216, 0.15);
+  border-color: rgba(46, 200, 216, 0.4);
+  box-shadow: 0 0 24px var(--glow);
+}
+body.theme-aegir .works-header h2::after {
+  background: linear-gradient(90deg, transparent, #2ec8d8, transparent);
+}
+body.theme-aegir .progress-bar { box-shadow: 0 0 12px rgba(30, 180, 200, 0.5); }
+body.theme-aegir .tagline .caret { color: #2ec8d8; }
+body.theme-aegir .status-dot { background: #2ec8d8; }
+
+/* light fx */
+body.theme-aegir .light-bloom {
+  background: radial-gradient(circle, rgba(40, 210, 230, 0.2) 0%, rgba(20, 120, 150, 0.06) 40%, transparent 70%);
+  right: -12%; top: -18%;
+}
+body.theme-aegir .light-ray {
+  background: linear-gradient(180deg, transparent, rgba(60, 220, 240, 0.06) 25%, rgba(180, 245, 255, 0.14) 50%, rgba(40, 180, 200, 0.05) 75%, transparent);
+}
+body.theme-aegir .light-orb.orb-1 {
+  background: radial-gradient(circle, rgba(80, 230, 245, 0.55) 0%, transparent 70%);
+}
+body.theme-aegir .light-orb.orb-2 {
+  background: radial-gradient(circle, rgba(40, 180, 210, 0.4) 0%, transparent 70%);
+}
+body.theme-aegir .light-orb.orb-3 {
+  background: radial-gradient(circle, rgba(160, 240, 255, 0.4) 0%, transparent 70%);
+}
+body.theme-aegir .light-streak {
+  background: linear-gradient(90deg, transparent, rgba(40, 200, 220, 0.05) 25%, rgba(180, 245, 255, 0.15) 50%, rgba(40, 200, 220, 0.05) 75%, transparent);
+}
+body.theme-aegir .profile::after {
+  background: linear-gradient(135deg, rgba(180, 245, 255, 0.1) 0%, transparent 28%, transparent 72%, rgba(40, 180, 200, 0.05) 100%);
+}
