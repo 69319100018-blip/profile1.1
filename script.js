@@ -10,9 +10,26 @@ const playerDur = document.getElementById('playerDur');
 const playerBar = document.getElementById('playerBar');
 
 music.volume = 0.42;
-music.dataset.userVol = '0.42';
 let isPlaying = false;
 let entered = false;
+
+// Default theme = 222 (bye × Into You) · set correct source + start offset on load
+(function initDefaultTrack() {
+  const source = music.querySelector('source');
+  if (source) {
+    source.src = 'bye-into-you-remix.mp3';
+    music.load();
+  }
+  window.__audioStartAt = 33;
+  // seek after metadata is ready
+  const seekToStart = () => {
+    if (window.__audioStartAt && isFinite(music.duration)) {
+      music.currentTime = Math.min(window.__audioStartAt, Math.max(0, music.duration - 1));
+    }
+  };
+  if (music.readyState >= 1) seekToStart();
+  else music.addEventListener('loadedmetadata', seekToStart, { once: true });
+})();
 
 function fmt(sec) {
   if (!isFinite(sec)) return '0:00';
@@ -34,31 +51,36 @@ music.addEventListener('loadedmetadata', updateProgress);
 
 function setPlaying(on) {
   isPlaying = on;
-  if (musicBtn) {
-    musicBtn.innerHTML = on
-      ? '<i class="fas fa-pause"></i>'
-      : '<i class="fas fa-play"></i>';
-  }
+  musicBtn.innerHTML = on
+    ? '<i class="fas fa-pause"></i>'
+    : '<i class="fas fa-play"></i>';
   if (player) player.classList.toggle('is-playing', on);
   if (on) {
-    // กู้ volume ถ้าติด 0 จาก fade ก่อนหน้า
-    const target = parseFloat(music.dataset.userVol || '0.42');
-    if (music.volume < 0.05) music.volume = target;
+    ensureAudioGraph();
     startViz();
   } else {
     stopViz();
   }
 }
 
-function enterSite() {
-  if (entered) return;
-  entered = true;
-
-  // สำคัญ: unlock AudioContext ทันทีใน user gesture (ก่อน play)
+/** Unlock / resume AudioContext during a real user gesture so sound can come out */
+function unlockAudio() {
   ensureAudioGraph();
   if (audioCtx && audioCtx.state === 'suspended') {
     audioCtx.resume().catch(() => {});
   }
+}
+
+function playMusic() {
+  unlockAudio();
+  return music.play()
+    .then(() => setPlaying(true))
+    .catch(() => setPlaying(false));
+}
+
+function enterSite() {
+  if (entered) return;
+  entered = true;
 
   intro.classList.add('hide');
   site.classList.add('show');
@@ -77,17 +99,8 @@ function enterSite() {
     requestAnimationFrame(() => glow.classList.add('is-visible'));
   }
 
-  // เริ่มเพลง default (theme-alt · bye × Into You) พร้อม volume ชัดเจน
-  music.volume = parseFloat(music.dataset.userVol || '0.42');
-  if (window.__audioStartAt) {
-    try { music.currentTime = window.__audioStartAt; } catch (_) {}
-  }
-  music.play()
-    .then(() => setPlaying(true))
-    .catch(() => {
-      // autoplay ถูกบล็อก — รอ user กดเล่นเอง
-      setPlaying(false);
-    });
+  // unlock + play inside the same user gesture
+  playMusic();
 
   setTimeout(() => {
     intro.style.display = 'none';
@@ -105,33 +118,22 @@ intro.addEventListener('keydown', (e) => {
   }
 });
 
-function toggleMusic(e) {
-  if (e) e.stopPropagation();
+musicBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
   if (isPlaying) {
     music.pause();
     setPlaying(false);
   } else {
-    const target = parseFloat(music.dataset.userVol || '0.42');
-    if (music.volume < 0.05) music.volume = target;
-    // unlock อีกครั้งเผื่อ context ถูก suspend
-    ensureAudioGraph();
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
-    }
-    music.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    playMusic();
   }
-}
-
-if (musicBtn) musicBtn.addEventListener('click', toggleMusic);
+});
 
 /* กดแถบที่พับอยู่เพื่อเล่นเพลง */
-if (player) {
-  player.addEventListener('click', (e) => {
-    if (isPlaying) return;
-    if (e.target.closest('.player-btn')) return;
-    toggleMusic(e);
-  });
-}
+player.addEventListener('click', (e) => {
+  if (isPlaying) return;
+  if (e.target.closest('.player-btn')) return;
+  playMusic();
+});
 
 playerBar.addEventListener('click', (e) => {
   if (!music.duration) return;
@@ -286,26 +288,17 @@ async function switchBackground(clip) {
     }
     audio.load();
     const startPlay = () => {
-      try {
-        if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
-      } catch (_) {}
-      // ถ้าเพิ่งสร้าง AudioContext ไว้ ต้อง resume หลัง load ใหม่
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
-      }
-      const vol = (typeof targetVol === 'number' && targetVol > 0) ? targetVol : 0.42;
-      audio.dataset.userVol = String(vol);
+      if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
+      audio.volume = 0;
       if (wasPlaying || entered) {
-        audio.volume = 0;
+        // ensure AudioContext is running before play (hotkey may not carry user activation)
+        unlockAudio();
         audio.play().then(() => {
           setPlaying(true);
-          fadeVolume(audio, vol, reduceMotion ? 0 : 550);
-        }).catch(() => {
-          audio.volume = vol;
-          setPlaying(false);
-        });
+          fadeVolume(audio, targetVol, reduceMotion ? 0 : 550);
+        }).catch(() => setPlaying(false));
       } else {
-        audio.volume = vol;
+        audio.volume = targetVol;
       }
     };
     if (audio.readyState >= 2) startPlay();
@@ -343,10 +336,8 @@ document.addEventListener('keydown', (event) => {
   switchBackground(clip);
 });
 
-// default theme on load · theme-alt + bye × Into You
+// default theme on load
 document.body.classList.add('theme-alt');
-window.__bgClip = '222.mp4';
-window.__audioStartAt = 33;
 applyMeta('222.mp4');
 
 // ========== Stars (from pro) ==========
@@ -812,6 +803,7 @@ const vizEl = document.getElementById('viz');
 const VIZ_BARS = 14;
 let audioCtx = null;
 let analyser = null;
+let mediaSourceNode = null;
 let freqData = null;
 let vizRaf = 0;
 let vizBars = [];
@@ -825,9 +817,20 @@ if (vizEl) {
   }
 }
 
+/**
+ * Create the Web Audio graph once.
+ * IMPORTANT:
+ * - Must be called during a user gesture (click/keydown) or AudioContext stays suspended.
+ * - On file:// protocol Chrome blocks MediaElementSource with CORS → outputs zeroes (silence).
+ *   In that case we skip the graph entirely so the <audio> element plays normally.
+ */
+const isFileProtocol = location.protocol === 'file:';
+
 function ensureAudioGraph() {
   if (!music) return;
-  // ถ้ามี graph แล้ว แค่ resume context
+  // file:// → never call createMediaElementSource (it mutes the element permanently)
+  if (isFileProtocol) return;
+  // already built
   if (analyser && audioCtx) {
     if (audioCtx.state === 'suspended') {
       audioCtx.resume().catch(() => {});
@@ -838,49 +841,72 @@ function ensureAudioGraph() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     audioCtx = new AC();
-    // สำคัญ: resume ทันทีหลังสร้าง (ต้องอยู่ใน user gesture)
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
-    }
-    const src = audioCtx.createMediaElementSource(music);
+    // createMediaElementSource takes over the <audio> output —
+    // we MUST connect it all the way to destination or there is no sound
+    mediaSourceNode = audioCtx.createMediaElementSource(music);
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 64;
     analyser.smoothingTimeConstant = 0.72;
-    src.connect(analyser);
+    mediaSourceNode.connect(analyser);
     analyser.connect(audioCtx.destination);
     freqData = new Uint8Array(analyser.frequencyBinCount);
+    // resume immediately while we still have user activation
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
   } catch (err) {
-    // ถ้าสร้าง graph ไม่ได้ → ปล่อยให้เสียงออกทางปกติ (ไม่ผ่าน Web Audio)
-    console.warn('visualizer unavailable — fallback to normal audio', err);
+    console.warn('visualizer unavailable', err);
     analyser = null;
-    audioCtx = null;
+    mediaSourceNode = null;
   }
 }
 
 function startViz() {
-  if (!analyser) return;
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(() => {});
-  }
   if (vizRaf) return;
-  const tick = () => {
-    if (!isPlaying || !analyser) {
+
+  // Real analyser available (http/https) → use frequency data
+  if (analyser && !isFileProtocol) {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch(() => {});
+    }
+    const tick = () => {
+      if (!isPlaying || !analyser) {
+        vizRaf = 0;
+        return;
+      }
+      analyser.getByteFrequencyData(freqData);
+      const n = vizBars.length;
+      const bins = freqData.length;
+      for (let i = 0; i < n; i++) {
+        const idx = Math.min(bins - 1, 1 + Math.floor(i * (bins - 2) / n));
+        const v = freqData[idx] / 255;
+        const center = 1 - Math.abs(i - (n - 1) / 2) / ((n - 1) / 2);
+        const h = Math.max(0.12, Math.min(1, v * 0.85 + center * 0.12)) * 100;
+        vizBars[i].style.height = h.toFixed(1) + '%';
+      }
+      vizRaf = requestAnimationFrame(tick);
+    };
+    vizRaf = requestAnimationFrame(tick);
+    return;
+  }
+
+  // file:// fallback: fake gentle pulse so the bars still look alive
+  const tickFake = () => {
+    if (!isPlaying) {
       vizRaf = 0;
       return;
     }
-    analyser.getByteFrequencyData(freqData);
+    const t = performance.now() / 280;
     const n = vizBars.length;
-    const bins = freqData.length;
     for (let i = 0; i < n; i++) {
-      const idx = Math.min(bins - 1, 1 + Math.floor(i * (bins - 2) / n));
-      const v = freqData[idx] / 255;
       const center = 1 - Math.abs(i - (n - 1) / 2) / ((n - 1) / 2);
-      const h = Math.max(0.12, Math.min(1, v * 0.85 + center * 0.12)) * 100;
+      const wave = 0.35 + 0.45 * Math.sin(t + i * 0.55) * Math.sin(t * 0.7 + i * 0.3);
+      const h = Math.max(0.12, Math.min(1, wave * 0.7 + center * 0.25)) * 100;
       vizBars[i].style.height = h.toFixed(1) + '%';
     }
-    vizRaf = requestAnimationFrame(tick);
+    vizRaf = requestAnimationFrame(tickFake);
   };
-  vizRaf = requestAnimationFrame(tick);
+  vizRaf = requestAnimationFrame(tickFake);
 }
 
 function stopViz() {
