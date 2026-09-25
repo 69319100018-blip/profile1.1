@@ -36,6 +36,13 @@ function setPlaying(on) {
   musicBtn.innerHTML = on
     ? '<i class="fas fa-pause"></i>'
     : '<i class="fas fa-play"></i>';
+  if (player) player.classList.toggle('is-playing', on);
+  if (on) {
+    ensureAudioGraph();
+    startViz();
+  } else {
+    stopViz();
+  }
 }
 
 function enterSite() {
@@ -85,6 +92,13 @@ musicBtn.addEventListener('click', (e) => {
   } else {
     music.play().then(() => setPlaying(true)).catch(() => {});
   }
+});
+
+/* กดแถบที่พับอยู่เพื่อเล่นเพลง */
+player.addEventListener('click', (e) => {
+  if (isPlaying) return;
+  if (e.target.closest('.player-btn')) return;
+  music.play().then(() => setPlaying(true)).catch(() => {});
 });
 
 playerBar.addEventListener('click', (e) => {
@@ -516,6 +530,7 @@ function openAlbum(key) {
   album.items.forEach((item, i) => {
     const el = document.createElement('div');
     el.className = 'album-item';
+    el.style.animationDelay = (0.04 * i) + 's';
     if (item.type === 'video') {
       el.innerHTML = `
         <img src="${item.thumb || item.src}" alt="Video ${i + 1}" loading="lazy" />
@@ -620,3 +635,203 @@ previewChars.forEach((item, i) => {
   });
   charsPreview.appendChild(div);
 });
+
+// ========== Profile card flip (QR back) ==========
+const profileCard = document.getElementById('profileCard');
+if (profileCard) {
+  let flipBusy = false;
+
+  function toggleProfileFlip() {
+    if (flipBusy) return;
+    flipBusy = true;
+    profileCard.classList.add('is-flipping');
+    // สลับหน้า/หลังตรงกลาง animation (ตอน scaleX ≈ 0)
+    setTimeout(() => {
+      profileCard.classList.toggle('is-flipped');
+    }, 320);
+    setTimeout(() => {
+      profileCard.classList.remove('is-flipping');
+      flipBusy = false;
+    }, 720);
+  }
+
+  profileCard.addEventListener('click', (e) => {
+    // อย่าพลิกเมื่อกดลิงก์โซเชียล
+    if (e.target.closest('a.social-btn')) return;
+    toggleProfileFlip();
+  });
+
+  profileCard.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleProfileFlip();
+    }
+  });
+}
+
+
+// ========== Cursor spotlight ==========
+(function initSpotlight() {
+  const spot = document.getElementById('spotlight');
+  if (!spot) return;
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const root = document.documentElement;
+  let mx = window.innerWidth / 2;
+  let my = window.innerHeight / 2;
+  let sx = mx;
+  let sy = my;
+  let raf = 0;
+  let active = false;
+
+  function paint() {
+    // smooth follow (lerp)
+    sx += (mx - sx) * 0.14;
+    sy += (my - sy) * 0.14;
+    root.style.setProperty('--spot-x', sx.toFixed(1) + 'px');
+    root.style.setProperty('--spot-y', sy.toFixed(1) + 'px');
+    const dx = Math.abs(mx - sx) + Math.abs(my - sy);
+    if (dx > 0.4) {
+      raf = requestAnimationFrame(paint);
+    } else {
+      raf = 0;
+    }
+  }
+
+  function onMove(e) {
+    mx = e.clientX;
+    my = e.clientY;
+    if (!active) {
+      active = true;
+      spot.classList.add('is-on');
+    }
+    if (!raf) raf = requestAnimationFrame(paint);
+  }
+
+  function onLeave() {
+    active = false;
+    spot.classList.remove('is-on', 'is-hot');
+  }
+
+  // brighter when hovering interactive targets
+  document.addEventListener('mouseover', (e) => {
+    const hot = e.target.closest(
+      'a, button, .card-flip, .project-card, .char-preview, .album-item, .social-btn, .nav-link, .tag'
+    );
+    spot.classList.toggle('is-hot', !!hot);
+  });
+
+  window.addEventListener('mousemove', onMove, { passive: true });
+  document.addEventListener('mouseleave', onLeave);
+})();
+
+
+// ========== Card light reflection ==========
+(function initCardReflection() {
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const selector = '.card, .project-card, .char-preview, .album-item';
+
+  function onMove(e) {
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    el.style.setProperty('--rx', x.toFixed(2) + '%');
+    el.style.setProperty('--ry', y.toFixed(2) + '%');
+  }
+
+  function bind(el) {
+    if (el.dataset.reflectBound) return;
+    el.dataset.reflectBound = '1';
+    el.addEventListener('mousemove', onMove, { passive: true });
+  }
+
+  document.querySelectorAll(selector).forEach(bind);
+
+  // album items created dynamically
+  const body = document.getElementById('albumBody');
+  if (body) {
+    const obs = new MutationObserver(() => {
+      body.querySelectorAll('.album-item').forEach(bind);
+    });
+    obs.observe(body, { childList: true });
+  }
+})();
+
+
+// ========== Audio visualizer ==========
+const vizEl = document.getElementById('viz');
+const VIZ_BARS = 14;
+let audioCtx = null;
+let analyser = null;
+let freqData = null;
+let vizRaf = 0;
+let vizBars = [];
+
+if (vizEl) {
+  for (let i = 0; i < VIZ_BARS; i++) {
+    const bar = document.createElement('span');
+    bar.className = 'viz-bar';
+    vizEl.appendChild(bar);
+    vizBars.push(bar);
+  }
+}
+
+function ensureAudioGraph() {
+  if (analyser || !music) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audioCtx = new AC();
+    const src = audioCtx.createMediaElementSource(music);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    analyser.smoothingTimeConstant = 0.72;
+    src.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    freqData = new Uint8Array(analyser.frequencyBinCount);
+  } catch (err) {
+    console.warn('visualizer unavailable', err);
+    analyser = null;
+  }
+}
+
+function startViz() {
+  if (!analyser) return;
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+  if (vizRaf) return;
+  const tick = () => {
+    if (!isPlaying || !analyser) {
+      vizRaf = 0;
+      return;
+    }
+    analyser.getByteFrequencyData(freqData);
+    const n = vizBars.length;
+    const bins = freqData.length;
+    for (let i = 0; i < n; i++) {
+      const idx = Math.min(bins - 1, 1 + Math.floor(i * (bins - 2) / n));
+      const v = freqData[idx] / 255;
+      const center = 1 - Math.abs(i - (n - 1) / 2) / ((n - 1) / 2);
+      const h = Math.max(0.12, Math.min(1, v * 0.85 + center * 0.12)) * 100;
+      vizBars[i].style.height = h.toFixed(1) + '%';
+    }
+    vizRaf = requestAnimationFrame(tick);
+  };
+  vizRaf = requestAnimationFrame(tick);
+}
+
+function stopViz() {
+  if (vizRaf) {
+    cancelAnimationFrame(vizRaf);
+    vizRaf = 0;
+  }
+  vizBars.forEach((bar, i) => {
+    const base = 12 + (i % 3) * 4;
+    bar.style.height = base + '%';
+  });
+}

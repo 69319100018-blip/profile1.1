@@ -27,6 +27,7 @@
     </video>
   </div>
   <div class="overlay"></div>
+  <div class="spotlight" id="spotlight" aria-hidden="true"></div>
   <div class="noise"></div>
   <canvas id="stars"></canvas>
   <div class="particles" id="particles"></div>
@@ -46,7 +47,7 @@
         <span class="intro-ring"></span>
       </div>
       <h1 class="intro-name">TALOS</h1>
-      <p class="intro-tag">fusion · pro × profile</p>
+      <p class="intro-tag"></p>
       <p class="intro-hint"><span class="intro-dot"></span> click to enter</p>
     </div>
   </div>
@@ -64,11 +65,31 @@
       <a href="#projects" class="nav-link" data-section="projects">Projects</a>
       <a href="#chars" class="nav-link" data-section="chars">Characters</a>
     </div>
-    <div class="nav-socials">
-      <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
-      <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" title="Steam"><i class="fab fa-steam"></i></a>
+    <div class="nav-right">
+      <div class="player" id="player" hidden>
+        <img src="photo.png" alt="" class="player-cover" />
+        <div class="player-info">
+          <div class="player-title" id="playerTitle">Swim</div>
+          <div class="player-sub" id="playerSub">instrumental · fusion</div>
+        </div>
+        <div class="viz" id="viz" aria-hidden="true"></div>
+        <div class="player-progress-wrap">
+          <span class="player-time" id="playerTime">0:00</span>
+          <div class="player-bar" id="playerBar">
+            <div class="player-fill" id="playerFill"></div>
+          </div>
+          <span class="player-dur" id="playerDur">0:00</span>
+        </div>
+        <button class="player-btn" id="musicBtn" title="Play / Pause">
+          <i class="fas fa-pause"></i>
+        </button>
+      </div>
+      <div class="nav-socials">
+        <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" title="Steam"><i class="fab fa-steam"></i></a>
+      </div>
     </div>
   </nav>
   <div class="nav-glow" id="navGlow" hidden></div>
@@ -78,26 +99,43 @@
     <!-- ABOUT -->
     <section id="about" class="section section-about">
       <div class="container">
-        <div class="card">
-          <div class="avatar-wrap">
-            <img src="photo.png" alt="Profile" class="avatar" />
-            <span class="status-dot" title="Online"></span>
-          </div>
-          <h1 class="name">Talos blackagency</h1>
-          <p class="handle">@etml01</p>
-          <p class="bio">Gamer · Dev · streamer<br></p>
-          <div class="tags">
-            <span class="tag">FiveM</span>
-            <span class="tag">Novel</span>
-            <span class="tag">Clips</span>
-            <span class="tag">Aesthetic</span>
-          </div>
-          <div class="socials">
-            <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" class="social-btn ig" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" class="social-btn fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" class="social-btn tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
-            <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" class="social-btn st" title="Steam"><i class="fab fa-steam"></i></a>
-            <a href="mailto:sriwathnphngscray@gmail.com" class="social-btn email" title="Email"><i class="fas fa-envelope"></i></a>
+        <div class="card-flip" id="profileCard" role="button" tabindex="0" aria-label="คลิกเพื่อพลิกการ์ด">
+          <div class="card-inner">
+            <!-- ด้านหน้า -->
+            <div class="card card-face card-front">
+              <div class="avatar-wrap">
+                <img src="photo.png" alt="Profile" class="avatar" />
+                <span class="status-dot" title="Online"></span>
+              </div>
+              <h1 class="name">Talos blackagency</h1>
+              <p class="handle">@etml01</p>
+              <p class="bio">Gamer · Dev · streamer<br></p>
+              <div class="tags">
+                <span class="tag">FiveM</span>
+                <span class="tag">Novel</span>
+                <span class="tag">Clips</span>
+                <span class="tag">Aesthetic</span>
+              </div>
+              <div class="socials">
+                <a href="https://www.instagram.com/etml_1/?hl=en" target="_blank" rel="noopener" class="social-btn ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/prasitchok.chinarin" target="_blank" rel="noopener" class="social-btn fb" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.tiktok.com/@talos.blackagency?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" class="social-btn tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                <a href="https://steamcommunity.com/profiles/76561198766387422/" target="_blank" rel="noopener" class="social-btn st" title="Steam"><i class="fab fa-steam"></i></a>
+                <a href="mailto:sriwathnphngscray@gmail.com" class="social-btn email" title="Email"><i class="fas fa-envelope"></i></a>
+              </div>
+              <p class="card-flip-hint"><i class="fas fa-sync-alt"></i> คลิกเพื่อพลิก</p>
+            </div>
+            <!-- ด้านหลัง · QR -->
+            <div class="card card-face card-back">
+              <p class="card-back-title">ช่องทางการโอนเงิน</p>
+              <div class="qr-wrap">
+                <img src="qr-promptpay.jfif" alt="QR PromptPay" class="qr-img" />
+              </div>
+              <p class="card-back-wallet">วอลเล็ต</p>
+              <p class="card-back-acc">เลขบัญชี: <strong>0963206695</strong></p>
+              <p class="card-back-name">ชื่อบัญชี: ประสิทธิ์โชค ไชยนรินทร์</p>
+              <p class="card-flip-hint"><i class="fas fa-sync-alt"></i> คลิกเพื่อพลิกกลับ</p>
+            </div>
           </div>
         </div>
       </div>
@@ -174,25 +212,6 @@
     <button class="lightbox-next" id="lightboxNext"><i class="fas fa-chevron-right"></i></button>
     <div class="lightbox-content" id="lightboxContent"></div>
     <p class="lightbox-count" id="lightboxCount"></p>
-  </div>
-
-  <!-- Music player bar -->
-  <div class="player" id="player" hidden>
-    <img src="photo.png" alt="" class="player-cover" />
-    <div class="player-info">
-      <div class="player-title" id="playerTitle">Swim</div>
-      <div class="player-sub" id="playerSub">instrumental · fusion</div>
-    </div>
-    <div class="player-progress-wrap">
-      <span class="player-time" id="playerTime">0:00</span>
-      <div class="player-bar" id="playerBar">
-        <div class="player-fill" id="playerFill"></div>
-      </div>
-      <span class="player-dur" id="playerDur">0:00</span>
-    </div>
-    <button class="player-btn" id="musicBtn" title="Play / Pause">
-      <i class="fas fa-pause"></i>
-    </button>
   </div>
 
   <audio id="bgMusic" loop preload="auto">
