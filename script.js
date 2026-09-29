@@ -753,6 +753,10 @@ const ALBUMS = {
       { type: 'image', src: 'char-seraphina.jfif' },
       { type: 'image', src: 'char-varencia.png' },
       { type: 'image', src: 'char-lucifer.png' },
+      { type: 'image', src: 'char-สุคุนะ เฟส.jfif' },
+      { type: 'image', src: 'char-เอลิเซีย.jfif' },
+      { type: 'image', src: 'char-เรย์เวน1.jfif' },
+      { type: 'image', src: 'char-เรย์เวน2.jfif' },
       { type: 'image', src: 'char-raymond.png' }
     ]
   },
