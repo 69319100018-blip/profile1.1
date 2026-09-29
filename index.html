@@ -47,9 +47,73 @@
         <span class="intro-ring"></span>
       </div>
       <h1 class="intro-name">TALOS</h1>
-      <p class="intro-tag"></p>
+      <p class="intro-tag">FUSION · PORTFOLIO</p>
       <p class="intro-hint"><span class="intro-dot"></span> click to enter</p>
     </div>
+  </div>
+
+  <!-- ========== LOADING SCREEN (หลังกด Enter) ========== -->
+  <div class="loader" id="loader" hidden>
+    <div class="loader-vignette"></div>
+    <div class="loader-scanlines"></div>
+    <div class="loader-grid"></div>
+    <div class="loader-glow"></div>
+    <div class="loader-pulse-ring"></div>
+    <div class="loader-pulse-ring loader-pulse-2"></div>
+    <div class="loader-pulse-ring loader-pulse-3"></div>
+    <div class="loader-particles" id="loaderParticles"></div>
+    <div class="loader-hex" id="loaderHex" aria-hidden="true"></div>
+    <div class="loader-corners" aria-hidden="true">
+      <span class="lc lc-tl"></span>
+      <span class="lc lc-tr"></span>
+      <span class="lc lc-bl"></span>
+      <span class="lc lc-br"></span>
+    </div>
+    <div class="loader-side loader-side-l" aria-hidden="true">
+      <span class="loader-tick"></span>
+      <span class="loader-side-text" id="loaderSideL">0x00</span>
+    </div>
+    <div class="loader-side loader-side-r" aria-hidden="true">
+      <span class="loader-tick"></span>
+      <span class="loader-side-text" id="loaderSideR">SYNC</span>
+    </div>
+    <div class="loader-inner">
+      <div class="loader-avatar-wrap">
+        <div class="loader-orbit">
+          <span class="loader-orbit-dot"></span>
+        </div>
+        <div class="loader-orbit loader-orbit-b">
+          <span class="loader-orbit-dot loader-orbit-dot-b"></span>
+        </div>
+        <span class="loader-ring"></span>
+        <span class="loader-ring loader-ring-2"></span>
+        <span class="loader-ring loader-ring-3"></span>
+        <img src="photo.png" alt="Talos" class="loader-avatar" />
+      </div>
+      <div class="loader-text-block">
+        <p class="loader-label"><span class="loader-label-dot"></span> SYSTEM BOOT</p>
+        <h2 class="loader-name" id="loaderName">
+          <span class="ln">T</span><span class="ln">A</span><span class="ln">L</span><span class="ln">O</span><span class="ln">S</span>
+        </h2>
+        <div class="loader-line"><span class="loader-line-fill"></span></div>
+      </div>
+      <div class="loader-steps" id="loaderSteps" aria-hidden="true">
+        <span class="loader-step"></span>
+        <span class="loader-step"></span>
+        <span class="loader-step"></span>
+        <span class="loader-step"></span>
+        <span class="loader-step"></span>
+      </div>
+      <p class="loader-status" id="loaderStatus">กำลังเข้าสู่ระบบ...</p>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar">
+          <div class="loader-fill" id="loaderFill"></div>
+        </div>
+        <span class="loader-pct" id="loaderPct">0%</span>
+      </div>
+      <p class="loader-theme-tag" id="loaderThemeTag"></p>
+    </div>
+    <div class="loader-flash" id="loaderFlash"></div>
   </div>
 
   <!-- Sticky chrome (outside .site so position:fixed works vs viewport) -->

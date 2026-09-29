@@ -1,4 +1,4 @@
-// ========== Intro + Music ==========
+	// ========== Intro + Music ==========
 const intro = document.getElementById('intro');
 const site = document.getElementById('site');
 const music = document.getElementById('bgMusic');
@@ -82,32 +82,200 @@ function enterSite() {
   if (entered) return;
   entered = true;
 
+  // ซ่อน intro แล้วเปิดหน้าโหลด
   intro.classList.add('hide');
-  site.classList.add('show');
-  document.body.classList.remove('locked');
-  player.hidden = false;
+  const loader = document.getElementById('loader');
+  const loaderFill = document.getElementById('loaderFill');
+  const loaderPct = document.getElementById('loaderPct');
+  const loaderStatus = document.getElementById('loaderStatus');
 
-  // show sticky navbar + glow
-  const nav = document.getElementById('navbar');
-  const glow = document.getElementById('navGlow');
-  if (nav) {
-    nav.hidden = false;
-    requestAnimationFrame(() => nav.classList.add('is-visible'));
+  // สุ่มพื้นหลัง + ธีมตอนกดเข้า
+  const randomClip = THEME_LIST[Math.floor(Math.random() * THEME_LIST.length)];
+  applyThemeSilent(randomClip);
+
+  // unlock audio ภายใน user gesture (เล่นจริงตอนโหลดครบ 100%)
+  unlockAudio();
+  // เตรียม element ไว้ล่วงหน้า บางเบราว์เซอร์อนุญาต play ทีหลังได้หลัง unlock
+  try {
+    const p = music.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => { music.pause(); music.currentTime = window.__audioStartAt || 0; }).catch(() => {});
+    }
+  } catch (_) {}
+
+  const isMobile = window.matchMedia('(max-width: 720px)').matches;
+  const sideL = document.getElementById('loaderSideL');
+  const sideR = document.getElementById('loaderSideR');
+  const themeTag = document.getElementById('loaderThemeTag');
+  const stepEls = document.querySelectorAll('.loader-step');
+
+  if (loader) {
+    loader.hidden = false;
+    loader.classList.remove('is-glitch', 'is-flash', 'is-done');
+
+    // particles
+    const particlesEl = document.getElementById('loaderParticles');
+    if (particlesEl) {
+      particlesEl.innerHTML = '';
+      const count = isMobile ? 10 : 20;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.className = 'loader-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = (-5 - Math.random() * 20) + '%';
+        p.style.animationDuration = (5 + Math.random() * 7) + 's';
+        p.style.animationDelay = (Math.random() * 2.5) + 's';
+        p.style.opacity = 0.25 + Math.random() * 0.55;
+        const size = (isMobile ? 1.5 : 2) + Math.random() * (isMobile ? 2 : 3);
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        particlesEl.appendChild(p);
+      }
+    }
+
+    // floating hex codes
+    const hexEl = document.getElementById('loaderHex');
+    if (hexEl) {
+      hexEl.innerHTML = '';
+      const hexCount = isMobile ? 6 : 14;
+      const words = ['0xFUSION', 'BOOT', 'SYNC', 'LOAD', 'TALOS', '0xA7', '0xFF', 'INIT', 'CORE', 'MEM'];
+      for (let i = 0; i < hexCount; i++) {
+        const s = document.createElement('span');
+        s.textContent = words[i % words.length] + ' ' + Math.floor(Math.random() * 0xff).toString(16).toUpperCase().padStart(2, '0');
+        s.style.left = (5 + Math.random() * 90) + '%';
+        s.style.bottom = (-10 - Math.random() * 30) + '%';
+        s.style.animationDuration = (7 + Math.random() * 8) + 's';
+        s.style.animationDelay = (Math.random() * 3) + 's';
+        hexEl.appendChild(s);
+      }
+    }
+
+    // show theme name mid-load
+    if (themeTag) {
+      themeTag.textContent = '';
+      themeTag.classList.remove('is-show');
+    }
+
+    requestAnimationFrame(() => loader.classList.add('is-active'));
   }
-  if (glow) {
-    glow.hidden = false;
-    requestAnimationFrame(() => glow.classList.add('is-visible'));
+
+  const statuses = [
+    'กำลังเข้าสู่ระบบ...',
+    'ซิงค์ธีม...',
+    'โหลดเนื้อหา...',
+    'เกือบเสร็จแล้ว...',
+    'พร้อมแล้ว'
+  ];
+  const sideMsgs = ['INIT', 'SYNC', 'LOAD', 'LINK', 'DONE'];
+  let pct = 0;
+  let statusIdx = 0;
+  let glitchOn = false;
+  let themeShown = false;
+  const duration = 3200; // ms · longer for extra flair
+  const start = performance.now();
+  const lineFill = document.querySelector('.loader-line-fill');
+
+  function tickLoader(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    pct = Math.round(eased * 100);
+
+    if (loaderFill) loaderFill.style.width = pct + '%';
+    if (loaderPct) loaderPct.textContent = pct + '%';
+    if (lineFill) lineFill.style.width = pct + '%';
+
+    // side hex counter
+    if (sideL) sideL.textContent = '0x' + pct.toString(16).toUpperCase().padStart(2, '0');
+
+    // step dots
+    const stepIdx = Math.min(stepEls.length - 1, Math.floor(t * stepEls.length));
+    stepEls.forEach((el, i) => {
+      el.classList.toggle('is-on', i === stepIdx && t < 1);
+      el.classList.toggle('is-done', i < stepIdx || t >= 1);
+    });
+
+    const nextStatus = Math.min(statuses.length - 1, Math.floor(t * statuses.length));
+    if (nextStatus !== statusIdx && loaderStatus) {
+      statusIdx = nextStatus;
+      loaderStatus.style.opacity = '0';
+      if (sideR) sideR.textContent = sideMsgs[statusIdx] || 'SYNC';
+      setTimeout(() => {
+        loaderStatus.textContent = statuses[statusIdx];
+        loaderStatus.style.opacity = '1';
+      }, 120);
+    }
+
+    // reveal theme tag around 55%
+    if (!themeShown && t > 0.55 && themeTag) {
+      themeShown = true;
+      themeTag.textContent = getThemeLabel(window.__bgClip || '222.mp4');
+      themeTag.classList.add('is-show');
+    }
+
+    // glitch letters near the end
+    if (loader && t > 0.82 && t < 0.95) {
+      if (!glitchOn) {
+        glitchOn = true;
+        loader.classList.add('is-glitch');
+      }
+    } else if (glitchOn && loader) {
+      glitchOn = false;
+      loader.classList.remove('is-glitch');
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(tickLoader);
+    } else {
+      if (loader) loader.classList.remove('is-glitch');
+      finishEnter();
+    }
   }
+  requestAnimationFrame(tickLoader);
 
-  // unlock + play inside the same user gesture
-  playMusic();
+  function finishEnter() {
+    // เล่นเพลงเมื่อโหลดครบ 100%
+    if (window.__audioStartAt && isFinite(music.duration)) {
+      music.currentTime = Math.min(window.__audioStartAt, Math.max(0, music.duration - 1));
+    }
+    playMusic();
 
-  setTimeout(() => {
-    intro.style.display = 'none';
-    // place indicator after nav is visible
-    const active = document.querySelector('.nav-link.active');
-    if (active && typeof moveNavIndicator === 'function') moveNavIndicator(active);
-  }, 700);
+    // brief flash then fade out
+    if (loader) {
+      loader.classList.add('is-flash');
+      setTimeout(() => {
+        loader.classList.remove('is-flash');
+        loader.classList.add('is-done');
+        loader.classList.remove('is-active');
+      }, 180);
+    }
+
+    setTimeout(() => {
+      site.classList.add('show');
+      document.body.classList.remove('locked');
+      player.hidden = false;
+
+      const nav = document.getElementById('navbar');
+      const glow = document.getElementById('navGlow');
+      if (nav) {
+        nav.hidden = false;
+        requestAnimationFrame(() => nav.classList.add('is-visible'));
+      }
+      if (glow) {
+        glow.hidden = false;
+        requestAnimationFrame(() => glow.classList.add('is-visible'));
+      }
+    }, 220);
+
+    setTimeout(() => {
+      intro.style.display = 'none';
+      if (loader) {
+        loader.hidden = true;
+        loader.classList.remove('is-done', 'is-flash');
+      }
+      const active = document.querySelector('.nav-link.active');
+      if (active && typeof moveNavIndicator === 'function') moveNavIndicator(active);
+    }, 750);
+  }
 }
 
 intro.addEventListener('click', enterSite);
@@ -142,19 +310,80 @@ playerBar.addEventListener('click', (e) => {
   music.currentTime = Math.max(0, Math.min(1, ratio)) * music.duration;
 });
 
-// ========== Theme + BG + Music hotkeys (like profile · Numpad 1–6) ==========
+// ========== Theme + BG + Music hotkeys ==========
+const THEME_LIST = [
+  'ssstik.io_@soul.blr_1779080280199.mp4', // noir
+  '222.mp4',                                 // alt
+  'capitano.mp4',
+  'qingxioa.mp4',                            // aegir
+  'alucard.mp4'
+];
 const THEME_CLIPS = {
-  Numpad1: 'ssstik.io_@soul.blr_1779080280199.mp4',
-  Numpad2: '222.mp4',
-  Numpad3: 'capitano.mp4',
-  Numpad4: 'qingxioa.mp4',
-  Numpad5: 'alucard.mp4'
+  Numpad1: THEME_LIST[0], Digit1: THEME_LIST[0],
+  Numpad2: THEME_LIST[1], Digit2: THEME_LIST[1],
+  Numpad3: THEME_LIST[2], Digit3: THEME_LIST[2],
+  Numpad4: THEME_LIST[3], Digit4: THEME_LIST[3],
+  Numpad5: THEME_LIST[4], Digit5: THEME_LIST[4]
 };
 const THEME_CLASSES = ['theme-noir', 'theme-alt', 'theme-capitano', 'theme-aegir', 'theme-alucard', 'theme-secret'];
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let bgSwitching = false;
 window.__bgClip = '222.mp4';
 window.__audioStartAt = 0;
+
+function getTrackForClip(clip) {
+  if (clip === '222.mp4') return 'bye-into-you-remix.mp3';
+  if (clip === 'qingxioa.mp4') return 'funk-mandala-slowed.mp3';
+  if (clip === 'alucard.mp4') return 'The Neighbourhood - Sweater Weather.mp3';
+  if (clip === 'capitano.mp4') return 'Halsey-Gasoline(instrumental).mp3';
+  return 'Insomnia slowed reverb.mp3';
+}
+
+function getAudioStartForClip(clip) {
+  if (clip === '222.mp4') return 33;
+  if (clip === 'alucard.mp4') return 19;
+  if (clip === 'qingxioa.mp4') return 4.1;
+  return 0;
+}
+
+function getThemeLabel(clip) {
+  if (clip === '222.mp4') return 'theme · 222';
+  if (clip === 'capitano.mp4') return 'theme · capitano';
+  if (clip === 'qingxioa.mp4') return 'theme · aegir';
+  if (clip === 'alucard.mp4') return 'theme · alucard';
+  return 'theme · noir';
+}
+
+/** ใช้ตอนเข้าเว็บ · ตั้งพื้นหลังทันทีโดยไม่ fade */
+function applyThemeSilent(clip) {
+  window.__bgClip = clip;
+  window.__audioStartAt = getAudioStartForClip(clip);
+
+  const active = getActiveBg();
+  if (active) {
+    const src = active.querySelector('source');
+    if (src) src.src = clip;
+    active.load();
+    try { active.play(); } catch (_) {}
+  }
+
+  applyThemeClasses(clip);
+  applyMeta(clip);
+
+  const source = music.querySelector('source');
+  if (source) {
+    source.src = getTrackForClip(clip);
+    music.load();
+  }
+}
+
+function cycleTheme(dir) {
+  if (!entered || bgSwitching) return;
+  const idx = THEME_LIST.indexOf(window.__bgClip);
+  const cur = idx < 0 ? 0 : idx;
+  const next = (cur + dir + THEME_LIST.length) % THEME_LIST.length;
+  switchBackground(THEME_LIST[next]);
+}
 
 function getActiveBg() {
   return document.querySelector('.video-bg .bg-layer.is-active') || document.getElementById('bgVideo');
@@ -190,6 +419,14 @@ function applyThemeClasses(clip) {
   else if (clip === 'capitano.mp4') document.body.classList.add('theme-capitano');
   else if (clip === 'qingxioa.mp4') document.body.classList.add('theme-aegir');
   else if (clip === 'alucard.mp4') document.body.classList.add('theme-alucard');
+  // retrigger bio card entrance animation
+  const bioCard = document.querySelector('.section-about .card');
+  if (bioCard) {
+    bioCard.style.animation = 'none';
+    // force reflow
+    void bioCard.offsetWidth;
+    bioCard.style.animation = '';
+  }
 }
 
 function applyMeta(clip) {
@@ -245,7 +482,7 @@ async function switchBackground(clip) {
     : (audio.volume || 0.42);
 
   window.__bgClip = clip;
-  window.__audioStartAt = isAlt ? 33 : (isAlucard ? 19 : (isAegir ? 4.1 : 0));
+  window.__audioStartAt = getAudioStartForClip(clip);
 
   if (incoming) {
     const src = incoming.querySelector('source');
@@ -275,23 +512,12 @@ async function switchBackground(clip) {
 
   if (audio) {
     const source = audio.querySelector('source');
-    if (source) {
-      source.src = isAlt
-        ? 'bye-into-you-remix.mp3'
-        : (isAegir
-          ? 'funk-mandala-slowed.mp3'
-          : (isAlucard
-            ? 'The Neighbourhood - Sweater Weather.mp3'
-            : (isCapitano
-              ? 'Halsey-Gasoline(instrumental).mp3'
-              : 'Insomnia slowed reverb.mp3')));
-    }
+    if (source) source.src = getTrackForClip(clip);
     audio.load();
     const startPlay = () => {
       if (window.__audioStartAt) audio.currentTime = window.__audioStartAt;
       audio.volume = 0;
       if (wasPlaying || entered) {
-        // ensure AudioContext is running before play (hotkey may not carry user activation)
         unlockAudio();
         audio.play().then(() => {
           setPlaying(true);
@@ -307,23 +533,28 @@ async function switchBackground(clip) {
 
   document.body.classList.remove('is-theme-fading');
   bgSwitching = false;
-
-  const label = isAlt
-    ? 'theme · 222'
-    : (isCapitano
-      ? 'theme · capitano'
-      : (isAegir
-        ? 'theme · aegir'
-        : (isAlucard ? 'theme · alucard' : 'theme · noir')));
-  showToast(label);
+  showToast(getThemeLabel(clip));
 }
 
-// Numpad hotkeys (same as profile)
+// Hotkeys · 1–5 / Numpad 1–5 เลือกธีม · [ ] หรือ T สลับ · 6 secret
 document.addEventListener('keydown', (event) => {
   const tag = event.target && event.target.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable) return;
+  if (!entered && event.code !== 'Enter' && event.code !== 'Space') return;
 
-  if (event.code === 'Numpad6') {
+  // cycle theme
+  if (event.code === 'BracketRight' || event.code === 'KeyT') {
+    event.preventDefault();
+    cycleTheme(1);
+    return;
+  }
+  if (event.code === 'BracketLeft') {
+    event.preventDefault();
+    cycleTheme(-1);
+    return;
+  }
+
+  if (event.code === 'Numpad6' || event.code === 'Digit6') {
     event.preventDefault();
     const on = document.body.classList.toggle('theme-secret');
     showToast(on ? 'secret · on' : 'secret · off');
@@ -676,10 +907,14 @@ previewChars.forEach((item, i) => {
 const profileCard = document.getElementById('profileCard');
 if (profileCard) {
   let flipBusy = false;
+  const isTouchDevice = () =>
+    window.matchMedia('(hover: none), (pointer: coarse)').matches ||
+    window.matchMedia('(max-width: 720px)').matches;
 
-  function toggleProfileFlip() {
+  function toggleProfileFlip(onComplete) {
     if (flipBusy) return;
     flipBusy = true;
+    const willShowBack = !profileCard.classList.contains('is-flipped');
     profileCard.classList.add('is-flipping');
     // สลับหน้า/หลังตรงกลาง animation (ตอน scaleX ≈ 0)
     setTimeout(() => {
@@ -688,12 +923,27 @@ if (profileCard) {
     setTimeout(() => {
       profileCard.classList.remove('is-flipping');
       flipBusy = false;
+      if (typeof onComplete === 'function') onComplete(willShowBack);
     }, 720);
   }
 
   profileCard.addEventListener('click', (e) => {
     // อย่าพลิกเมื่อกดลิงก์โซเชียล
     if (e.target.closest('a.social-btn')) return;
+
+    // มือถือ: ครั้งที่ 1 → ด้านหลัง · ครั้งที่ 2 → กลับหน้า + เปลี่ยนพื้นหลัง
+    if (isTouchDevice()) {
+      const showingBack = profileCard.classList.contains('is-flipped');
+      if (showingBack) {
+        toggleProfileFlip(() => {
+          if (entered) cycleTheme(1);
+        });
+      } else {
+        toggleProfileFlip();
+      }
+      return;
+    }
+
     toggleProfileFlip();
   });
 

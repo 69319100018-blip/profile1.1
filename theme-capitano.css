@@ -1,148 +1,284 @@
 /* =========================================================
-   theme-capitano — capitano.mp4
-   frozen steel · ice crystal · gothic void · authority
+   theme-capitano — frozen steel · ice crystal · authority
+   Bio: crystalline, cold blue-steel, sharp geometry
    ========================================================= */
 body.theme-capitano {
-  --ink: #e8eef6;
-  --muted: rgba(160, 185, 210, 0.5);
-  --panel: rgba(6, 10, 16, 0.8);
-  --panel-solid: rgba(8, 12, 18, 0.96);
-  --line: rgba(100, 150, 200, 0.2);
-  --glow: rgba(100, 180, 255, 0.32);
-  --listen: #70b8f0;
-  --listen-bg: rgba(80, 160, 230, 0.12);
-  --listen-border: rgba(100, 170, 240, 0.38);
-  --progress: linear-gradient(90deg, #0c2038, #3a88c8, #b8dcff);
-  --accent: #5aabe8;
-  background: #03060b;
+  --accent: #3a88c8;
+  --accent-2: #b8dcff;
+  --glow: rgba(58, 136, 200, 0.35);
 }
 
-body.theme-capitano .video-bg video {
-  filter: brightness(0.45) contrast(1.18) saturate(0.75) hue-rotate(-8deg);
+body.theme-capitano .video-bg .bg-layer {
+  filter: brightness(0.4) contrast(1.2) saturate(0.75) hue-rotate(-10deg);
 }
-body.theme-capitano .banner video {
-  filter: brightness(0.72) contrast(1.12) saturate(0.88);
-}
-body.theme-capitano .video-overlay {
+body.theme-capitano .overlay {
   background:
-    radial-gradient(ellipse 80% 55% at 60% 30%, rgba(60, 120, 180, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 20% 80%, rgba(20, 40, 70, 0.2) 0%, transparent 50%),
-    linear-gradient(180deg,
-      rgba(3, 6, 11, 0.55) 0%,
-      rgba(3, 6, 11, 0.12) 32%,
-      rgba(3, 6, 11, 0.55) 68%,
-      rgba(2, 4, 8, 0.97) 100%);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(40, 90, 150, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at center, rgba(4, 10, 20, 0.2) 0%, rgba(2, 6, 14, 0.94) 100%);
 }
-body.theme-capitano .video-overlay::after {
-  box-shadow:
-    inset 0 0 140px rgba(1, 3, 8, 0.7),
-    inset 0 0 30px rgba(80, 140, 200, 0.04),
-    inset 0 -50px 90px rgba(0, 0, 0, 0.4);
+body.theme-capitano .noise { opacity: 0.03; }
+body.theme-capitano .light-bloom {
+  background: radial-gradient(ellipse, rgba(80, 150, 220, 0.16) 0%, transparent 70%);
 }
-body.theme-capitano .noise { opacity: 0.05; }
+body.theme-capitano .orb-1 { background: #2a70b0; opacity: 0.25; }
+body.theme-capitano .orb-2 { background: #80b8e8; opacity: 0.18; }
 
 body.theme-capitano .scroll-progress {
-  background: linear-gradient(90deg, transparent, #5aabe8, #e0f0ff);
-  box-shadow: 0 0 20px rgba(80, 160, 240, 0.4);
+  background: linear-gradient(90deg, transparent, #3a88c8, #b8dcff);
+}
+body.theme-capitano .navbar.is-scrolled {
+  background: rgba(4, 10, 20, 0.88);
+  border-bottom-color: rgba(80, 150, 220, 0.14);
+}
+body.theme-capitano .nav-indicator {
+  background: linear-gradient(90deg, #1a5080, #b8dcff);
 }
 
-body.theme-capitano .enter-inner {
-  border-color: rgba(100, 160, 220, 0.18);
-  box-shadow: 0 40px 100px rgba(0,0,0,0.55), inset 0 1px 0 rgba(140, 190, 255, 0.1);
+body.theme-capitano .section-about .card {
+  background: linear-gradient(155deg, rgba(10, 20, 36, 0.9) 0%, rgba(4, 10, 20, 0.88) 100%);
+  border: 1px solid rgba(100, 170, 230, 0.25);
+  border-radius: 4px;
+  clip-path: polygon(
+    0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px,
+    100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px)
+  );
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.55), 0 0 40px rgba(40, 100, 180, 0.08);
+  animation: capCardIn 0.85s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  position: relative;
 }
-body.theme-capitano .enter-inner::before {
-  background: radial-gradient(circle, rgba(90, 160, 240, 0.16) 0%, transparent 62%);
+@keyframes capCardIn {
+  from { opacity: 0; transform: translateY(40px); filter: brightness(1.3); }
+  to { opacity: 1; transform: translateY(0); filter: none; }
 }
-body.theme-capitano .enter-name {
-  text-shadow: 0 4px 40px rgba(0,0,0,0.6), 0 0 55px rgba(90, 170, 255, 0.28);
+body.theme-capitano .section-about .card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #5aa8e8, #d0eaff, #5aa8e8, transparent);
+  animation: capScan 3s linear infinite;
+  z-index: 2;
 }
-body.theme-capitano .enter-pulse { background: #5aabe8; }
-body.theme-capitano .enter-avatar,
+@keyframes capScan {
+  0% { opacity: 0.3; transform: scaleX(0.3); }
+  50% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0.3; transform: scaleX(0.3); }
+}
+
+body.theme-capitano .card-flip:hover .card {
+  border-color: rgba(140, 200, 255, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 55px rgba(50, 120, 200, 0.2);
+}
+
 body.theme-capitano .avatar {
-  background: conic-gradient(from 0deg, #5aabe8, #e8f4ff, #5aabe8, #2a6088, #5aabe8);
-  box-shadow: 0 0 0 4px rgba(6, 10, 16, 0.95), 0 12px 32px rgba(0,0,0,0.5), 0 0 40px rgba(90, 170, 255, 0.25);
+  border-radius: 4px;
+  border-color: rgba(100, 180, 240, 0.55);
+  box-shadow: 0 0 0 3px rgba(40, 100, 180, 0.15), 0 0 32px rgba(60, 140, 220, 0.3);
+}
+body.theme-capitano .avatar-wrap {
+  animation: capFloat 5s ease-in-out infinite;
+}
+@keyframes capFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(0.5deg); }
+}
+body.theme-capitano .status-dot {
+  background: #40b0f0;
+  border-radius: 1px;
+  box-shadow: 0 0 12px rgba(64, 176, 240, 0.7);
+  animation: capStatus 1.8s ease-in-out infinite;
+}
+@keyframes capStatus {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
-body.theme-capitano .profile {
-  box-shadow:
-    0 2px 0 rgba(140, 190, 255, 0.06) inset,
-    0 32px 80px rgba(0,0,0,0.55),
-    0 0 70px rgba(60, 140, 220, 0.1);
+body.theme-capitano .name {
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 1.7rem;
 }
-body.theme-capitano .profile:hover {
-  box-shadow: 0 2px 0 rgba(140, 190, 255, 0.1) inset, 0 40px 100px rgba(0,0,0,0.6), 0 0 90px var(--glow);
-}
-body.theme-capitano .profile::before {
-  background: linear-gradient(90deg, transparent, rgba(180,220,255,0.3), #5aabe8, rgba(180,220,255,0.3), transparent);
+body.theme-capitano .handle {
+  color: rgba(150, 200, 240, 0.7);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
 }
 body.theme-capitano .bio {
-  border-left-color: rgba(90, 171, 232, 0.45);
-  color: rgba(200, 220, 240, 0.55);
+  color: rgba(190, 220, 245, 0.55);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
 }
-body.theme-capitano .name-scatter .letter.is-active {
-  color: #7ec0f5;
-  text-shadow: 0 0 24px rgba(90, 170, 255, 0.5);
-}
-body.theme-capitano .socials a:hover, body.theme-capitano .share-btn:hover {
-  background: rgba(90, 171, 232, 0.15);
-  border-color: rgba(90, 171, 232, 0.4);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.35), 0 0 24px var(--glow);
-}
-body.theme-capitano .play-btn {
-  background: linear-gradient(145deg, rgba(90, 171, 232, 0.42), rgba(30, 80, 140, 0.28));
-  border-color: rgba(90, 171, 232, 0.5);
-  box-shadow: 0 6px 24px rgba(60, 140, 220, 0.3), inset 0 1px 0 rgba(255,255,255,0.15);
-}
-body.theme-capitano .play-btn:hover {
-  background: linear-gradient(145deg, rgba(120, 190, 255, 0.5), rgba(40, 100, 170, 0.3));
-  box-shadow: 0 8px 32px rgba(60, 140, 220, 0.45), 0 0 32px var(--glow);
-}
-body.theme-capitano .player:has(.viz.active) {
-  border-color: rgba(90, 171, 232, 0.32);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 40px var(--glow);
-}
-body.theme-capitano .orbit-filter.is-active {
-  background: rgba(90, 171, 232, 0.18);
-  border-color: rgba(90, 171, 232, 0.42);
-  box-shadow: 0 0 24px var(--glow);
-}
-body.theme-capitano .cf-cover.is-active .cf-face {
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 2px rgba(90, 171, 232, 0.45), 0 0 50px var(--glow);
-}
-body.theme-capitano .orbit-nav:hover {
-  background: rgba(90, 171, 232, 0.15);
-  border-color: rgba(90, 171, 232, 0.38);
-  box-shadow: 0 0 24px var(--glow);
-}
-body.theme-capitano .works-header h2::after {
-  background: linear-gradient(90deg, transparent, #5aabe8, transparent);
-}
-body.theme-capitano .progress-bar { box-shadow: 0 0 12px rgba(60, 140, 220, 0.45); }
-body.theme-capitano .tagline .caret { color: #5aabe8; }
 
-/* light fx — capitano (ice crystal) */
-body.theme-capitano .light-bloom {
-  background: radial-gradient(circle, rgba(100, 180, 255, 0.18) 0%, rgba(50, 110, 180, 0.06) 40%, transparent 70%);
-  right: -10%; top: -15%;
+body.theme-capitano .tag {
+  border-radius: 2px;
+  background: rgba(40, 100, 180, 0.15);
+  border-color: rgba(90, 160, 230, 0.3);
+  color: #a8d4f8;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  font-family: 'DM Mono', monospace;
 }
-body.theme-capitano .light-ray {
-  background: linear-gradient(180deg, transparent, rgba(140, 200, 255, 0.06) 20%, rgba(220, 240, 255, 0.14) 48%, rgba(100, 170, 240, 0.05) 75%, transparent);
-  filter: blur(1px);
+body.theme-capitano .tag:hover {
+  background: rgba(60, 130, 210, 0.3);
+  box-shadow: 0 0 18px rgba(60, 140, 220, 0.25);
 }
-body.theme-capitano .light-orb.orb-1 {
-  background: radial-gradient(circle, rgba(160, 210, 255, 0.55) 0%, transparent 70%);
-  opacity: 0.4;
+body.theme-capitano .section.is-inview .tag {
+  animation: capTagIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
-body.theme-capitano .light-orb.orb-2 {
-  background: radial-gradient(circle, rgba(80, 150, 230, 0.4) 0%, transparent 70%);
+@keyframes capTagIn {
+  from { opacity: 0; transform: translateY(10px) skewX(-4deg); }
+  to { opacity: 1; transform: translateY(0) skewX(0); }
 }
-body.theme-capitano .light-orb.orb-3 {
-  background: radial-gradient(circle, rgba(200, 230, 255, 0.45) 0%, transparent 70%);
+
+body.theme-capitano .social-btn {
+  border-radius: 2px;
+  background: rgba(40, 100, 180, 0.1);
+  border-color: rgba(80, 150, 220, 0.22);
 }
-body.theme-capitano .light-streak {
-  background: linear-gradient(90deg, transparent, rgba(120, 180, 255, 0.05) 25%, rgba(220, 240, 255, 0.15) 50%, rgba(120, 180, 255, 0.05) 75%, transparent);
-  height: 1.5px;
+body.theme-capitano .social-btn:hover {
+  background: rgba(50, 130, 210, 0.3);
+  border-color: rgba(140, 200, 255, 0.5);
+  box-shadow: 0 6px 22px rgba(40, 100, 180, 0.3);
 }
-body.theme-capitano .profile::after {
-  background: linear-gradient(135deg, rgba(200, 230, 255, 0.1) 0%, transparent 28%, transparent 72%, rgba(80, 150, 230, 0.05) 100%);
+
+body.theme-capitano .projects-title,
+body.theme-capitano .chars-title {
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+body.theme-capitano .project-card {
+  border-radius: 4px;
+  border-color: rgba(80, 150, 220, 0.18);
+}
+body.theme-capitano .project-card:hover {
+  border-color: rgba(120, 190, 255, 0.4);
+  box-shadow: 0 16px 40px rgba(20, 70, 140, 0.28);
+}
+body.theme-capitano .char-preview { border-radius: 4px; }
+body.theme-capitano .chars-open-btn {
+  border-radius: 2px;
+  background: rgba(40, 100, 180, 0.22);
+  border-color: rgba(90, 160, 230, 0.4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+body.theme-capitano .player-fill {
+  background: linear-gradient(90deg, #1a5080, #3a88c8, #b8dcff);
+}
+body.theme-capitano .particle { background: rgba(140, 200, 255, 0.55); }
+
+/* ===== Ambient animations · capitano steel ===== */
+body.theme-capitano .particle {
+  animation-name: capParticleRise;
+  background: rgba(150, 210, 255, 0.6);
+  border-radius: 1px;
+  width: 2px !important;
+  height: 2px !important;
+  box-shadow: 0 0 6px rgba(100, 180, 255, 0.5);
+}
+@keyframes capParticleRise {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.8; }
+  100% { transform: translateY(-110vh) rotate(180deg); opacity: 0; }
+}
+
+body.theme-capitano .projects-title::after,
+body.theme-capitano .chars-title::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  margin: 12px auto 0;
+  background: linear-gradient(90deg, transparent, #3a88c8, #b8dcff, #3a88c8, transparent);
+  transition: width 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+body.theme-capitano .section.is-inview .projects-title::after,
+body.theme-capitano .section.is-inview .chars-title::after {
+  width: 60%;
+  animation: capLineScan 2.5s linear infinite 0.7s;
+}
+@keyframes capLineScan {
+  0%, 100% { filter: brightness(0.8); }
+  50% { filter: brightness(1.5); }
+}
+
+body.theme-capitano .section.is-inview .project-card {
+  animation: capProjectIn 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+body.theme-capitano .section.is-inview .project-card:nth-child(1) { animation-delay: 0.08s; }
+body.theme-capitano .section.is-inview .project-card:nth-child(2) { animation-delay: 0.16s; }
+body.theme-capitano .section.is-inview .project-card:nth-child(3) { animation-delay: 0.24s; }
+@keyframes capProjectIn {
+  from { opacity: 0; transform: translateY(30px) skewY(1deg); }
+  to { opacity: 1; transform: translateY(0) skewY(0); }
+}
+
+body.theme-capitano .section.is-inview .char-preview {
+  animation: capCharIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+body.theme-capitano .section.is-inview .char-preview:nth-child(n) { animation-delay: calc(0.06s * var(--i, 1)); }
+body.theme-capitano .section.is-inview .char-preview:nth-child(1) { animation-delay: 0.05s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(2) { animation-delay: 0.1s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(3) { animation-delay: 0.15s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(4) { animation-delay: 0.2s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(5) { animation-delay: 0.25s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(6) { animation-delay: 0.3s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(7) { animation-delay: 0.35s; }
+body.theme-capitano .section.is-inview .char-preview:nth-child(8) { animation-delay: 0.4s; }
+@keyframes capCharIn {
+  from { opacity: 0; transform: scale(0.85) translateY(12px); filter: brightness(1.4); }
+  to { opacity: 1; transform: scale(1) translateY(0); filter: none; }
+}
+
+body.theme-capitano .section.is-inview .social-btn {
+  animation: capSocialIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+body.theme-capitano .section.is-inview .social-btn:nth-child(1) { animation-delay: 0.3s; }
+body.theme-capitano .section.is-inview .social-btn:nth-child(2) { animation-delay: 0.35s; }
+body.theme-capitano .section.is-inview .social-btn:nth-child(3) { animation-delay: 0.4s; }
+body.theme-capitano .section.is-inview .social-btn:nth-child(4) { animation-delay: 0.45s; }
+body.theme-capitano .section.is-inview .social-btn:nth-child(5) { animation-delay: 0.5s; }
+@keyframes capSocialIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body.theme-capitano .nav-glow.is-visible {
+  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(50, 120, 200, 0.4) 0%, transparent 70%);
+  animation: capNavScan 3s ease-in-out infinite;
+}
+@keyframes capNavScan {
+  0%, 100% { opacity: 0.6; transform: translateX(-50%) scaleX(0.9); }
+  50% { opacity: 1; transform: translateX(-50%) scaleX(1.05); }
+}
+
+body.theme-capitano .player.is-playing .player-cover {
+  box-shadow: 0 0 16px rgba(60, 140, 220, 0.45);
+  animation: capCoverPulse 2s ease-in-out infinite;
+}
+@keyframes capCoverPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(60, 140, 220, 0.3); }
+  50% { box-shadow: 0 0 24px rgba(100, 180, 255, 0.55); }
+}
+
+/* running text · steel blue */
+body.theme-capitano .intro-name,
+body.theme-capitano .name,
+body.theme-capitano .projects-title,
+body.theme-capitano .chars-title,
+body.theme-capitano .loader-name .ln {
+  background-image: linear-gradient(
+    90deg,
+    #e8f4ff 0%,
+    #70b8f0 22%,
+    #3a88c8 45%,
+    #b8dcff 70%,
+    #e8f4ff 100%
+  );
 }
